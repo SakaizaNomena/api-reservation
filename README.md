@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏨 API de Réservation Laravel
+# 🏨 API de Réservation
 
 ### *Une solution complète pour gérer vos propriétés et réservations*
 
