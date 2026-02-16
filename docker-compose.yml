@@ -3,9 +3,10 @@ services:
     laravel.test:
         build:
             context: .
-            dockerfile: docker/8.2/Dockerfile
+            dockerfile: docker/8.4/Dockerfile
             args:
-                WWWGROUP: '${WWWGROUP}'
+                WWWGROUP: '1000'
+                WWWUSER: '1000'
         image: 'laravel-app'
         container_name: laravel.test
         restart: unless-stopped
@@ -33,7 +34,7 @@ services:
         container_name: nginx
         restart: unless-stopped
         ports:
-            - '80:80'
+            - '8000:80'
             - '443:443'
         volumes:
             - '.:/var/www/html'
@@ -50,13 +51,11 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         volumes:
             - 'sail-mysql:/var/lib/mysql'
         ports:
-            - '3306:3306'
+            - '3307:3306'
         networks:
             - sail
 
