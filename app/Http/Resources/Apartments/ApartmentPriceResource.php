@@ -5,6 +5,17 @@ namespace App\Http\Resources\Apartments;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="ApartmentPriceResource",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="apartment_id", type="integer", example=1),
+ *     @OA\Property(property="start_date", type="string", format="date", example="2026-03-01"),
+ *     @OA\Property(property="end_date", type="string", format="date", example="2026-03-31"),
+ *     @OA\Property(property="price_per_night", type="number", format="float", example=100.50)
+ * )
+ */
 class ApartmentPriceResource extends JsonResource
 {
     /**

@@ -6,6 +6,23 @@ use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="ApartmentViewResource",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Apartment 101"),
+ *     @OA\Property(property="type", type="string", example="Studio"),
+ *     @OA\Property(property="adult_capacity", type="integer", example=2),
+ *     @OA\Property(property="children_capacity", type="integer", example=1),
+ *     @OA\Property(property="size", type="integer", example=50),
+ *     @OA\Property(property="beds_list", type="string", example="1 double bed"),
+ *     @OA\Property(property="bathrooms", type="integer", example=1),
+ *     @OA\Property(property="facility_categories", type="object"),
+ *     @OA\Property(property="available_in", type="array", @OA\Items(type="object")),
+ *     @OA\Property(property="price", type="number", format="float", example=250.00)
+ * )
+ */
 class ApartmentViewResource extends JsonResource
 {
     /**

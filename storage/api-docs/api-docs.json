@@ -1,10 +1,16 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Laravel Booking API",
+        "title": "API de Réservation",
         "description": "API for booking properties and apartments",
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "/api/v1",
+            "description": "API Server"
+        }
+    ],
     "paths": {
         "/api/v1": {
             "get": {
@@ -30,6 +36,1263 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User login",
+                "description": "Logs in a user and returns an access token",
+                "operationId": "d00f4d12443a970455f396756440af3f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "test@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User registration",
+                "description": "Registers a new user and returns the user data and an access token",
+                "operationId": "1bc076b4e4d21f72f56edfa37e6364c5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "role_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    },
+                                    "role_id": {
+                                        "description": "2 for User, 3 for Owner",
+                                        "type": "integer",
+                                        "example": "2"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful registration",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "access_token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/v1/owner/properties/{property}/apartments/{apartment}/bookings": {
+            "get": {
+                "tags": [
+                    "Owner Apartments"
+                ],
+                "summary": "Get all bookings for a specific apartment",
+                "operationId": "d575a80345a07113be5effc0c5877c4c",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/BookingResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/apartments": {
+            "get": {
+                "tags": [
+                    "Owner Apartments"
+                ],
+                "summary": "Get all apartments for a property",
+                "operationId": "93cc67ce66eb297b09611adc705a420c",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ApartmentDetailsResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Owner Apartments"
+                ],
+                "summary": "Create a new apartment",
+                "operationId": "31d9506733a6feb0da959f5f23069763",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "apartment_type_id",
+                                    "size"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Apartment 101"
+                                    },
+                                    "apartment_type_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "size": {
+                                        "type": "integer",
+                                        "example": 50
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Apartment created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/apartments/{apartment}": {
+            "get": {
+                "tags": [
+                    "Owner Apartments"
+                ],
+                "summary": "Get apartment details",
+                "operationId": "d64544ee09d4dad29bc184718780f25a",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApartmentDetailsResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Owner Apartments"
+                ],
+                "summary": "Update an apartment",
+                "operationId": "e7b9dd1daa64fa3208a51b04bf6293c2",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Apartment"
+                                    },
+                                    "size": {
+                                        "type": "integer",
+                                        "example": 60
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Apartment updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "updated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/apartments/{apartment}/deactivate": {
+            "put": {
+                "tags": [
+                    "Owner Apartments"
+                ],
+                "summary": "Deactivate an apartment",
+                "operationId": "38027a73567b6d47235809e870d5a936",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Apartment deactivated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "deactivated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/apartments/{apartment}/activate": {
+            "put": {
+                "tags": [
+                    "Owner Apartments"
+                ],
+                "summary": "Activate an apartment",
+                "operationId": "f820db10f09786d4a579f0de21155fbd",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Apartment activated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "activated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/apartments/{apartment}/prices": {
+            "get": {
+                "tags": [
+                    "Owner Apartment Prices"
+                ],
+                "summary": "Get all prices for an apartment",
+                "operationId": "60cf40583a67af21c17b1dc96715203a",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ApartmentPriceResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Owner Apartment Prices"
+                ],
+                "summary": "Create a new price for an apartment",
+                "operationId": "ebab059d817ccde686ece8242486b050",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "start_date",
+                                    "end_date",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-31"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100.5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Price created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "created."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/apartments/{apartment}/prices/{price}": {
+            "get": {
+                "tags": [
+                    "Owner Apartment Prices"
+                ],
+                "summary": "Get price details",
+                "operationId": "e421d84104a91400ccf3633ee8d53115",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "price",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApartmentPriceResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Owner Apartment Prices"
+                ],
+                "summary": "Update a price",
+                "operationId": "d71a4246047b21c295c8b1e8346b449b",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "price",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-31"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 120
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Price updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "updated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Owner Apartment Prices"
+                ],
+                "summary": "Delete a price",
+                "operationId": "0dab37b69a58d42512df30885ed9d036",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "price",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Price deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties": {
+            "get": {
+                "tags": [
+                    "Owner Properties"
+                ],
+                "summary": "Get a list of properties for the authenticated owner",
+                "operationId": "c752d7072f6165cb0bc1f7bae489f3f5",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PropertyDetailsResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Owner Properties"
+                ],
+                "summary": "Create a new property",
+                "operationId": "d1301f4a0c634b21bae5df2cecbbc9d3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "city_id",
+                                    "address_street",
+                                    "address_postcode"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Beautiful Villa"
+                                    },
+                                    "city_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "address_street": {
+                                        "type": "string",
+                                        "example": "123 Main St"
+                                    },
+                                    "address_postcode": {
+                                        "type": "string",
+                                        "example": "12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Property created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "created."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}": {
+            "get": {
+                "tags": [
+                    "Owner Properties"
+                ],
+                "summary": "Get property details",
+                "operationId": "a0a808c3a8c4c71d3ba0a828530f8a6c",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PropertyDetailsResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Owner Properties"
+                ],
+                "summary": "Update a property",
+                "operationId": "37fe5e79bcbf2f793642fcabb4e40968",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Villa Name"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Property updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "updated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/deactivate": {
+            "put": {
+                "tags": [
+                    "Owner Properties"
+                ],
+                "summary": "Deactivate a property",
+                "operationId": "0b45d469646b51602d37b8913d0c4109",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property deactivated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "deactivated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/activate": {
+            "put": {
+                "tags": [
+                    "Owner Properties"
+                ],
+                "summary": "Activate a property",
+                "operationId": "3d35c420ead843cf174e37087c6d7bb6",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property activated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "activated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/photos": {
+            "post": {
+                "tags": [
+                    "Owner Property Photos"
+                ],
+                "summary": "Upload photos for a property",
+                "operationId": "33839a106daaaab7f3346a8f6cd07197",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "photos"
+                                ],
+                                "properties": {
+                                    "photos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Photos uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PropertyPhotoResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/owner/properties/{property}/photos/{photo}/reorder": {
+            "put": {
+                "tags": [
+                    "Owner Property Photos"
+                ],
+                "summary": "Reorder a property photo",
+                "operationId": "74eae6745cd32092def0bd69ed71ae5b",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "photo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "new_order"
+                                ],
+                                "properties": {
+                                    "new_order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Photo reordered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "new_order": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/apartments/view/{apartment}": {
+            "get": {
+                "tags": [
+                    "Public"
+                ],
+                "summary": "View public apartment details",
+                "operationId": "60c7ead4c4e54dcd3e95b05df4c8b579",
+                "parameters": [
+                    {
+                        "name": "apartment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApartmentViewResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Apartment not found"
                     }
                 }
             }
@@ -135,6 +1398,613 @@
                     }
                 }
             }
+        },
+        "/api/v1/properties/view/{property}": {
+            "get": {
+                "tags": [
+                    "Public"
+                ],
+                "summary": "View public property details",
+                "operationId": "3b3bdfb44caa8ae0a25a13e69304f765",
+                "parameters": [
+                    {
+                        "name": "property",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PropertyViewResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/bookings": {
+            "get": {
+                "tags": [
+                    "User Bookings"
+                ],
+                "summary": "Get all user bookings",
+                "operationId": "6248872f97b570489c94b73a6b8fa066",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/BookingResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User Bookings"
+                ],
+                "summary": "Create a new booking",
+                "operationId": "146f03d075c30736d8c407d5bf42821d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "apartment_id",
+                                    "start_date",
+                                    "end_date",
+                                    "guests_adults"
+                                ],
+                                "properties": {
+                                    "apartment_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-15"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-20"
+                                    },
+                                    "guests_adults": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "guests_children": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Booking created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/bookings/{booking}": {
+            "get": {
+                "tags": [
+                    "User Bookings"
+                ],
+                "summary": "Get booking details",
+                "operationId": "da09508d1f2270cf0693e0307b6d990f",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User Bookings"
+                ],
+                "summary": "Update a booking",
+                "operationId": "d88f499278da5c8d62275fd006024d9c",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-16"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-21"
+                                    },
+                                    "guests_adults": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 10,
+                                        "minimum": 1,
+                                        "example": 9
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Booking updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "updated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/bookings/{booking}/cancel": {
+            "put": {
+                "tags": [
+                    "User Bookings"
+                ],
+                "summary": "Cancel a booking",
+                "operationId": "ca8dbe457bb596518067c9679c0af8a8",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking cancelled",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "cancelled."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Booking not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApartmentDetailsResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Apartment 101"
+                    },
+                    "active": {
+                        "type": "string",
+                        "example": "yes"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Studio"
+                    },
+                    "adult_capacity": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "children_capacity": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "size": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "beds_list": {
+                        "type": "string",
+                        "example": "1 double bed"
+                    },
+                    "bathrooms": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "facilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "available_in": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "booked_in": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ApartmentPriceResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "apartment_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-01"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-31"
+                    },
+                    "price_per_night": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100.5
+                    }
+                },
+                "type": "object"
+            },
+            "ApartmentViewResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Apartment 101"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Studio"
+                    },
+                    "adult_capacity": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "children_capacity": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "size": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "beds_list": {
+                        "type": "string",
+                        "example": "1 double bed"
+                    },
+                    "bathrooms": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "facility_categories": {
+                        "type": "object"
+                    },
+                    "available_in": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 250
+                    }
+                },
+                "type": "object"
+            },
+            "BookingResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "apartment_name": {
+                        "type": "string",
+                        "example": "Apartment 101"
+                    },
+                    "apartment_view_link": {
+                        "type": "string",
+                        "example": "http://example.com/api/v1/apartments/view/1"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-15"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-20"
+                    },
+                    "adult_guests": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "children_guests": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "total_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 500
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "example": 9
+                    },
+                    "review_comment": {
+                        "type": "string",
+                        "example": "Great stay!"
+                    },
+                    "booked_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-03-01"
+                    },
+                    "cancelled_at": {
+                        "type": "string",
+                        "format": "date",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "PropertyDetailsResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Beautiful Villa"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Paris"
+                    },
+                    "active": {
+                        "type": "string",
+                        "example": "yes"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "123 Main St, 12345"
+                    },
+                    "bookings_avg_rating": {
+                        "type": "string",
+                        "example": "8.5"
+                    },
+                    "apartments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ApartmentDetailsResource"
+                        }
+                    },
+                    "apartments_view_link": {
+                        "type": "string",
+                        "example": "http://example.com/api/v1/owner/properties/1/apartments"
+                    },
+                    "facilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "photos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PropertyPhotoResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PropertyPhotoResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "file_name": {
+                        "type": "string",
+                        "example": "http://example.com/storage/photos/photo.jpg"
+                    },
+                    "thumbnail": {
+                        "type": "string",
+                        "example": "http://example.com/storage/photos/thumb_photo.jpg"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "PropertyViewResource": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Beautiful Villa"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "123 Main St, 12345"
+                    },
+                    "facilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "apartments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ApartmentViewResource"
+                        }
+                    },
+                    "photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "avg_rating": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 8.5,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Enter your Bearer token in the format: Bearer {token}",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
         }
     },
     "tags": [
@@ -143,8 +2013,36 @@
             "description": "Welcome"
         },
         {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Owner Apartments",
+            "description": "Owner Apartments"
+        },
+        {
+            "name": "Owner Apartment Prices",
+            "description": "Owner Apartment Prices"
+        },
+        {
+            "name": "Owner Properties",
+            "description": "Owner Properties"
+        },
+        {
+            "name": "Owner Property Photos",
+            "description": "Owner Property Photos"
+        },
+        {
+            "name": "Public",
+            "description": "Public"
+        },
+        {
             "name": "Properties",
             "description": "Properties"
+        },
+        {
+            "name": "User Bookings",
+            "description": "User Bookings"
         }
     ]
 }

@@ -9,8 +9,19 @@ use Illuminate\Routing\Controller as BaseController;
 /**
  * @OA\Info(
  *      version="1.0.0",
- *      title="Laravel Booking API",
+ *      title="API de Réservation",
  *      description="API for booking properties and apartments"
+ * )
+ * @OA\SecurityScheme(
+ *      securityScheme="sanctum",
+ *      type="http",
+ *      scheme="bearer",
+ *      bearerFormat="JWT",
+ *      description="Enter your Bearer token in the format: Bearer {token}"
+ * )
+ * @OA\Server(
+ *      url="/api/v1",
+ *      description="API Server"
  * )
  */
 class Controller extends BaseController
