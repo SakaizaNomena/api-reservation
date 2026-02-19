@@ -138,13 +138,11 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-L'API sera accessible sur `http://localhost:8000` 🎉
-
 ---
 
 ## 📚 Référence API
 
-> ⚠️ **Important** : Toujours préciser la version de l'API : `/api`
+> ⚠️ **Important** : L'API sera accessible sur `http://localhost:8000` 🎉
 
 ### 🔑 Authentification
 
