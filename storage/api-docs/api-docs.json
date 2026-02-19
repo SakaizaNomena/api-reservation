@@ -1,0 +1,150 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel Booking API",
+        "description": "API for booking properties and apartments",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1": {
+            "get": {
+                "tags": [
+                    "Welcome"
+                ],
+                "summary": "Welcome message",
+                "description": "Returns a welcome message for the API",
+                "operationId": "35303f5f4aa24f7b6fc72c33f73e6a91",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Welcome to Booking API"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/search": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Search for properties",
+                "description": "Search for properties based on various criteria",
+                "operationId": "11530fbd0e6024604bf0a1056c1e22e9",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Start date for booking (YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "End date for booking (YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "price_from",
+                        "in": "query",
+                        "description": "Minimum price per night",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "price_to",
+                        "in": "query",
+                        "description": "Maximum price per night",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "ID of the city",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "country_id",
+                        "in": "query",
+                        "description": "ID of the country",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "geoobject_id",
+                        "in": "query",
+                        "description": "ID of the geoobject (e.g. airport, train station)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "adult_capacity",
+                        "in": "query",
+                        "description": "Number of adults",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "children_capacity",
+                        "in": "query",
+                        "description": "Number of children",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "facilities[]",
+                        "in": "query",
+                        "description": "Array of facility IDs",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Welcome",
+            "description": "Welcome"
+        },
+        {
+            "name": "Properties",
+            "description": "Properties"
+        }
+    ]
+}

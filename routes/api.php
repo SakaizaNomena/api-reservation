@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\WelcomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Owner\ApartmentBookingController;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::get('/', WelcomeController::class);
 
 Route::as('auth.')
     ->prefix('auth')

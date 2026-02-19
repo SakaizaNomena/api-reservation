@@ -11,6 +11,78 @@ use Illuminate\Http\Request;
 
 class PropertySearchController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/search",
+     *     summary="Search for properties",
+     *     description="Search for properties based on various criteria",
+     *     tags={"Properties"},
+     *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="Start date for booking (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="End date for booking (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="price_from",
+     *         in="query",
+     *         description="Minimum price per night",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Parameter(
+     *         name="price_to",
+     *         in="query",
+     *         description="Maximum price per night",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="city_id",
+     *         in="query",
+     *         description="ID of the city",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="country_id",
+     *         in="query",
+     *         description="ID of the country",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="geoobject_id",
+     *         in="query",
+     *         description="ID of the geoobject (e.g. airport, train station)",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="adult_capacity",
+     *         in="query",
+     *         description="Number of adults",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="children_capacity",
+     *         in="query",
+     *         description="Number of children",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *      @OA\Parameter(
+     *         name="facilities[]",
+     *         in="query",
+     *         description="Array of facility IDs",
+     *         @OA\Schema(type="array", @OA\Items(type="integer"))
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     )
+     * )
+     */
     public function __invoke(Request $request)
     {
         $propertiesQuery = Property::withWhereHas('apartments.prices', function ($query) use ($request) {
@@ -41,7 +113,7 @@ class PropertySearchController extends Controller
                     $query->where('price_per_night', '<=', $request->price_to);
                 });
             })
-            ->when($request->city_id, function ($query) use ($request) {
+            ->when($request->city__id, function ($query) use ($request) {
                 $query->where('city_id', $request->city_id);
             })
             ->when($request->country_id, function ($query) use ($request) {
