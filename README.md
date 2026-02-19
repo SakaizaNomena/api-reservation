@@ -144,7 +144,7 @@ L'API sera accessible sur `http://localhost:8000` 🎉
 
 ## 📚 Référence API
 
-> ⚠️ **Important** : Toujours préciser la version de l'API : `/api/v1`
+> ⚠️ **Important** : Toujours préciser la version de l'API : `/api`
 
 ### 🔑 Authentification
 
